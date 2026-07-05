@@ -1,50 +1,31 @@
-# MA2511 - Applied Linear Algebra
-# Project R Script Template
-#
-# Fill in the sections below with your own code.
-# This script should reproduce the main results and figures in your report.
 
 ##########################################################
 # 1. Project Information
 ##########################################################
 
 # Student name: Khalid Elmasri
-# Student ID: 52427759
 # Project title: Analysis of Future of Stocks using Linear Algebra
 #"How much is a S&P 500 ETF Investment Expected to grow in the next 20 years?"
 
 ##########################################################
-# 2. Load Packages (if any)
+# 2. Load Packages 
 ##########################################################
 
-# If you use extra packages, load them here.
-# For example:
-# library(ggplot2)
 install.packages("dplyr")
 library(dplyr)
+
 ##########################################################
 # 3. Load Data 
 ##########################################################
 
-# Option 1: Read from a CSV file
-# data <- read.csv("your_data.csv")
 data<- read.csv("https://raw.githubusercontent.com/fja05680/dow-sp500-100-years/refs/heads/master/SP500.csv") #S&P 500 last 100 years
-# Option 2: Use a built-in dataset (for practice only)
-# data <- mtcars
 
-# Show the first few rows
-# head(data)
+# Showing the first few rows
 head(data) #Shows the price from 30/12/1927-09/01/1928 of the SnP 500 ETF
 ##########################################################
 # 4. Data Cleaning and Preprocessing
 ##########################################################
 
-# Examples:
-# - select columns of interest
-# - remove missing values
-# - create new variables
-
-# data_clean <- subset(data, !is.na(variable_of_interest))
 data_clean <- data%>% #selecting appropriate columns
   select(Date, Adj.Close) %>%
   mutate(Date = as.Date(Date)) %>%
@@ -54,10 +35,6 @@ data_clean <- data%>% #selecting appropriate columns
 # 5. Exploratory Plots
 ##########################################################
 
-# Example scatter plot:
-# plot(data_clean$x, data_clean$y,
-#      xlab = "X variable", ylab = "Y variable",
-#      main = "Scatter plot of Y vs X")
 colnames(data) #graph of S&P 500 last 100 years
 plot(data_clean$Date, data_clean$Adj.Close,
      type="l" ,
@@ -65,24 +42,11 @@ plot(data_clean$Date, data_clean$Adj.Close,
      xlab="Date",
      ylab="Adj.close",
      main="S&P 500  (1928-2019)")
+
 ##########################################################
 # 6. Linear Algebra Methods
 ##########################################################
 
-# Example: Construct design matrix for linear regression
-# A <- cbind(1, data_clean$x)   # column of ones + predictor
-# b <- data_clean$y
-
-# Least-squares solution via normal equations:
-# x_hat <- solve(t(A) %*% A, t(A) %*% b)
-# x_hat
-
-# Example: PCA
-# X <- as.matrix(data_clean[, c("var1", "var2", "var3")])
-# pca_res <- prcomp(X, center = TRUE, scale. = FALSE)
-# summary(pca_res)
-# pca_res$rotation
-# pca_res$x
 years<-20
 no_days<-252*years #number of trading days multiplied by 20 years
 data_20years<-tail(data_clean,no_days)
@@ -117,18 +81,6 @@ p_future <- as.numeric(exp(p_future_log))
 ##########################################################
 # 7. Visualisation of Results
 ##########################################################
-
-# Example: fitted line vs data
-# plot(data_clean$x, data_clean$y,
-#      xlab = "X", ylab = "Y", main = "Data with fitted line")
-# abline(a = x_hat[1], b = x_hat[2])
-
-# Example: PCA scores plot
-# scores <- pca_res$x
-# plot(scores[,1], scores[,2],
-#      xlab = "PC1", ylab = "PC2",
-#      main = "PCA scores")
-# abline(h = 0, v = 0, col = "grey")
 
 y_range <- range(c(data_20years$Adj.Close, trend, p_future), na.rm = TRUE) 
 padding <- 0.15 * diff(y_range)
@@ -167,17 +119,3 @@ profit <- future_value - investment
 
 future_value
 profit
-
-##########################################################
-# 8. Save Figures (Optional)
-##########################################################
-# Example:
-# pdf("my_figure.pdf")
-# plot(data_clean$x, data_clean$y)
-# dev.off()
-
-##########################################################
-# 9. Session Information (Optional)
-##########################################################
-
-# sessionInfo()
