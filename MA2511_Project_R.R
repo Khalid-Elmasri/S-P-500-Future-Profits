@@ -1,121 +1,255 @@
 
-##########################################################
-# 1. Project Information
-##########################################################
+# ==========================================
+# Long-Term S&P 500 Growth Modelling
+# ==========================================
+#
+# Research Question:
+# How might a $10,000 investment grow over
+# the next 20 years if recent historical
+# S&P 500 growth trends continue?
+#
+# Method:
+# - Historical S&P 500 data
+# - Log transformation
+# - Least-squares estimation using
+#   linear algebra
+# - Exponential trend forecasting
+#
+# ==========================================
 
-# Student name: Khalid Elmasri
-# Project title: Analysis of Future of Stocks using Linear Algebra
-#"How much is a S&P 500 ETF Investment Expected to grow in the next 20 years?"
-
-##########################################################
-# 2. Load Packages 
-##########################################################
-
-install.packages("dplyr")
 library(dplyr)
 
-##########################################################
-# 3. Load Data 
-##########################################################
+# ==========================================
+# Data Loading
+# ==========================================
 
-data<- read.csv("https://raw.githubusercontent.com/fja05680/dow-sp500-100-years/refs/heads/master/SP500.csv") #S&P 500 last 100 years
+load_data <- function(url) {
 
-# Showing the first few rows
-head(data) #Shows the price from 30/12/1927-09/01/1928 of the SnP 500 ETF
-##########################################################
-# 4. Data Cleaning and Preprocessing
-##########################################################
+  data <- read.csv(url)
 
-data_clean <- data%>% #selecting appropriate columns
-  select(Date, Adj.Close) %>%
-  mutate(Date = as.Date(Date)) %>%
-  filter(!is.na(Date), !is.na(Adj.Close))
+  data %>%
+    select(Date, Adj.Close) %>%
+    mutate(Date = as.Date(Date)) %>%
+    filter(!is.na(Date), !is.na(Adj.Close))
+}
 
-##########################################################
-# 5. Exploratory Plots
-##########################################################
+# ==========================================
+# Model Fitting
+# ==========================================
 
-colnames(data) #graph of S&P 500 last 100 years
-plot(data_clean$Date, data_clean$Adj.Close,
-     type="l" ,
-     col="red",
-     xlab="Date",
-     ylab="Adj.close",
-     main="S&P 500  (1928-2019)")
+fit_log_linear_model <- function(prices) {
 
-##########################################################
-# 6. Linear Algebra Methods
-##########################################################
+  log_prices <- log(prices)
 
-years<-20
-no_days<-252*years #number of trading days multiplied by 20 years
-data_20years<-tail(data_clean,no_days)
+  T <- length(log_prices)
+  t <- 0:(T - 1)
 
-p<-data_20years$Adj.Close #price vector
-p_log <- log(data_20years$Adj.Close) #price vector treated as exponential
+  X <- cbind(1, t)
 
-T <- length(p_log) # Time index
-t <- 0:(T - 1)
+  beta_hat <- solve(t(X) %*% X) %*%
+    t(X) %*%
+    log_prices
 
-X <- cbind(1, t) #Design matrix
+  list(
+    beta = beta_hat,
+    T = T,
+    X = X,
+    trend_log = X %*% beta_hat
+  )
+}
 
-beta_hat <- solve(t(X) %*% X) %*% t(X) %*% p_log # Least squares
+# ==========================================
+# Forecasting
+# ==========================================
 
-trend_log <- X %*% beta_hat # compound trend
-trend <- as.numeric(exp(trend_log))
+forecast_prices <- function(beta_hat,
+                            T,
+                            years_ahead = 20) {
 
-#profit in the future
-future_years <- 20
+  trading_days <- 252
 
-future_dates <- seq(
-  from = max(data_20years$Date),
-  by   = "year",
-  length.out = future_years + 1
+  future_dates <- seq(
+    from = max(data_recent$Date),
+    by = "year",
+    length.out = years_ahead + 1
+  )
+
+  t_future <- T + (0:years_ahead) * trading_days
+
+  X_future <- cbind(1, t_future)
+
+  future_log <- X_future %*% beta_hat
+
+  list(
+    dates = future_dates,
+    prices = as.numeric(exp(future_log))
+  )
+}
+
+# ==========================================
+# Investment Metrics
+# ==========================================
+
+calculate_investment_growth <- function(
+  initial_investment,
+  current_trend_value,
+  future_trend_value
+) {
+
+  future_value <- initial_investment *
+    (future_trend_value / current_trend_value)
+
+  profit <- future_value - initial_investment
+
+  list(
+    future_value = future_value,
+    profit = profit
+  )
+}
+
+# ==========================================
+# Data Source
+# ==========================================
+
+data_url <- "https://raw.githubusercontent.com/fja05680/dow-sp500-100-years/refs/heads/master/SP500.csv"
+
+sp500 <- load_data(data_url)
+
+# ==========================================
+# Select Last 20 Years
+# ==========================================
+
+years_used <- 20
+trading_days <- 252
+
+recent_days <- years_used * trading_days
+
+data_recent <- tail(sp500, recent_days)
+
+# ==========================================
+# Fit Model
+# ==========================================
+
+model <- fit_log_linear_model(
+  data_recent$Adj.Close
 )
-t_future <- T + (0:future_years) * 252
-X_future <- cbind(1, t_future)
 
-p_future_log <- X_future %*% beta_hat
-p_future <- as.numeric(exp(p_future_log))
+trend_prices <- exp(model$trend_log)
 
-##########################################################
-# 7. Visualisation of Results
-##########################################################
+# ==========================================
+# Generate Forecast
+# ==========================================
 
-y_range <- range(c(data_20years$Adj.Close, trend, p_future), na.rm = TRUE) 
+forecast <- forecast_prices(
+  beta_hat = model$beta,
+  T = model$T,
+  years_ahead = 20
+)
+
+# ==========================================
+# Plot Results
+# ==========================================
+
+y_range <- range(
+  c(
+    data_recent$Adj.Close,
+    trend_prices,
+    forecast$prices
+  )
+)
+
 padding <- 0.15 * diff(y_range)
 
 plot(
-  data_20years$Date,
-  data_20years$Adj.Close,
+  data_recent$Date,
+  data_recent$Adj.Close,
   type = "l",
   col = "red",
   lwd = 1,
-  xlim = range(c(data_20years$Date, future_dates)),
+  xlim = range(
+    c(
+      data_recent$Date,
+      forecast$dates
+    )
+  ),
+  ylim = c(
+    y_range[1] - padding,
+    y_range[2] + padding
+  ),
   xlab = "Date",
-  ylim = c(y_range[1] - padding, y_range[2] + padding),
   ylab = "Adjusted Close",
-  main = "S&P 500: Compound Growth Trend and 20-Year Projection"
+  main = "S&P 500 Long-Term Trend Projection"
 )
 
-lines(data_20years$Date, trend, col = "blue", lwd = 3)
-lines(future_dates, p_future, col = "green", lwd = 3, lty = 2)
-abline(v = max(data_20years$Date), col = "red", lty = 3)
+lines(
+  data_recent$Date,
+  trend_prices,
+  col = "blue",
+  lwd = 3
+)
+
+lines(
+  forecast$dates,
+  forecast$prices,
+  col = "darkgreen",
+  lwd = 3,
+  lty = 2
+)
+
+abline(
+  v = max(data_recent$Date),
+  col = "black",
+  lty = 3
+)
 
 legend(
   "topleft",
-  legend = c("Observed Prices", "Compound Trend", "Future Projection"),
-  col = c("red", "blue", "green"),
-  lwd = c(1, 3, 3),
-  lty = c(1, 1, 2)
+  legend = c(
+    "Observed Prices",
+    "Fitted Trend",
+    "Forecast"
+  ),
+  col = c(
+    "red",
+    "blue",
+    "darkgreen"
+  ),
+  lwd = c(
+    1,
+    3,
+    3
+  ),
+  lty = c(
+    1,
+    1,
+    2
+  )
 )
 
+# ==========================================
+# Investment Scenario
+# ==========================================
+
 investment <- 10000
-P0 <- tail(trend, 1)
-P_future <- tail(p_future, 1)
 
-future_value <- investment * (P_future / P0)
-profit <- future_value - investment
+current_trend <- tail(trend_prices, 1)
 
-future_value
-profit
+future_trend <- tail(
+  forecast$prices,
+  1
+)
+
+results <- calculate_investment_growth(
+  investment,
+  current_trend,
+  future_trend
+)
+
+cat("\n")
+cat("===================================\n")
+cat("Investment Projection\n")
+cat("===================================\n")
+cat("Initial Investment: $", investment, "\n")
+cat("Projected Value:    $", round(results$future_value, 2), "\n")
+cat("Projected Profit:   $", round(results$profit, 2), "\n")
+cat("===================================\n")
