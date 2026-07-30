@@ -180,7 +180,7 @@ Potential extensions include:
 ---
 
 ## Limitations
-- Assumes a constant growth rate.4
-- Ignores recessions and economic shocks.5
--  Does not account for inflation.6
+- Assumes a constant growth rate.
+- Ignores recessions and economic shocks.
+-  Does not account for inflation.
 -  Uses a simple trend model rather than a financial forecasting model.
