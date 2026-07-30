@@ -6,9 +6,7 @@ This project investigates long-term growth trends in the S&P 500 using historica
 
 Rather than using high-level regression functions, the model is built directly from the least-squares solution:
 
-\[
-\beta = (X^TX)^{-1}X^Ty
-\]
+β = (XᵀX)⁻¹Xᵀy
 
 This demonstrates the underlying mathematics behind linear regression and exponential growth modelling.
 
