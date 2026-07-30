@@ -38,34 +38,22 @@ Stock prices often exhibit approximately exponential growth over long periods.
 
 To linearise the trend, prices are transformed using:
 
-\[
-y = \log(P)
-\]
+y = log(P)
 
 where:
 
-- \(P\) = adjusted closing price
-- \(y\) = transformed price
+- P = adjusted closing price
+- y = transformed price
 
 ### 4. Least-Squares Fitting
 
 A design matrix is constructed:
 
-\[
-X =
-\begin{bmatrix}
-1 & t_1 \\
-1 & t_2 \\
-\vdots & \vdots \\
-1 & t_n
-\end{bmatrix}
-\]
+X = [1  t]
 
 The model parameters are estimated using:
 
-\[
-\beta = (X^TX)^{-1}X^Ty
-\]
+β = (XᵀX)⁻¹Xᵀy
 
 This provides the exponential growth trend that best fits the historical data.
 
@@ -77,14 +65,14 @@ The fitted model is projected forward by 20 years, producing an estimate of futu
 
 The future value of a hypothetical investment is calculated using:
 
-\[
-FV = PV \times \frac{P_{future}}{P_{current}}
-\]
+FV = PV × (Pfuture / Pcurrent)
 
 where:
 
-- \(PV\) = present value
-- \(FV\) = future value
+- PV = present value
+- FV = future value
+- Pfuture = projected future index value
+- Pcurrent = current trend value
 
 ---
 
@@ -131,8 +119,6 @@ The exact values depend on the most recent market data available when the analys
 
 ## Limitations
 
-This project is intended as an educational exercise rather than investment advice.
-
 Several important limitations exist:
 
 - Assumes historical growth continues unchanged.
@@ -174,11 +160,3 @@ Potential extensions include:
 - Comparison with ARIMA forecasting techniques
 - Risk-adjusted return metrics
 - Dividend reinvestment modelling
-
----
-
-## Limitations
-- Assumes a constant growth rate.
-- Ignores recessions and economic shocks.
--  Does not account for inflation.
--  Uses a simple trend model rather than a financial forecasting model.
