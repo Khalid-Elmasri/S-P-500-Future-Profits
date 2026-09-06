@@ -1,10 +1,6 @@
 # 📈 Long-Term S&P 500 Growth Modelling
 
-(https://img.shields.io/badge/R-Statistical%20Computing-blue)
-(https://img.shields.io/badge/Linear%20Algebra-Least%20Squares-green)
-(https://img.shields.io/badge/Finance-Time%20Series-orange)
-(https://img.shields.io/badge/Forecasting-20%20Year%20Projection-red)
-![Project](https://img.shields.io/badge/Project-Completed-brightgreen)
+https://img.shields.io/badge/R-Programming-blue https://img.shields.io/badge/Finance-S%26P500-orange https://img.shields.io/badge/Linear%20Algebra-Least%20Squares-green https://img.shields.io/badge/Forecasting-20%20Years-red Status
 
 A quantitative finance project that uses historical S&P 500 data, linear algebra, and exponential trend modelling to investigate how a long-term investment may grow if recent market growth trends continue.
 
