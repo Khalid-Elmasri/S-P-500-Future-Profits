@@ -136,7 +136,7 @@ where:
 
 ### Historical Prices, Fitted Trend and Forecast
 
-Rplot.png
+Rplot.pdf
 
 This figure shows:
 
