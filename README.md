@@ -136,7 +136,7 @@ where:
 
 ### Historical Prices, Fitted Trend and Forecast
 
-Rplot01.png
+![S&P 500 Forecast](Rplot01.png)
 
 This figure shows:
 
