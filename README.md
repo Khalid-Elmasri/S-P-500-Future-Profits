@@ -149,21 +149,29 @@ The fitted trend captures the underlying long-term growth trajectory while smoot
 
 ---
 
-## 💰 Investment Projection
+## 💰 Example Projection
 
-The model evaluates a hypothetical:
+Using the fitted trend model, a hypothetical investment of:
 
 ```text
-Initial Investment: $10,000
+$10,000
 ```
 
-and estimates:
+was projected to grow to:
 
-- Future portfolio value
-- Total profit
-- Growth implied by the fitted long-term trend
+```text
+$25,916.58
+```
 
-The exact values vary depending on the latest available market data.
+over a 20-year period.
+
+Estimated profit:
+
+```text
+$15,916.58
+```
+
+This projection assumes that the growth trend observed in the most recent 20 years of S&P 500 data continues unchanged.
 
 ---
 
