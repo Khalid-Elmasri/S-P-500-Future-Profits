@@ -1,162 +1,221 @@
-# Long-Term S&P 500 Growth Modelling
+# 📈 Long-Term S&P 500 Growth Modelling
 
-## Overview
+https://img.shields.io/badge/R-Statistical%20Computing-blue
+https://img.shields.io/badge/Linear%20Algebra-Least%20Squares-green
+https://img.shields.io/badge/Finance-Time%20Series-orange
+https://img.shields.io/badge/Forecasting-20%20Year%20Projection-red
+![Project](https://img.shields.io/badge/Project-Completed-brightgreen)
 
-This project investigates long-term growth trends in the S&P 500 using historical market data and linear algebra techniques. The aim is to estimate how a hypothetical investment may grow over the next 20 years if recent historical trends continue.
-
-Rather than using high-level regression functions, the model is built directly from the least-squares solution:
-
-β = (XᵀX)⁻¹Xᵀy
-
-This demonstrates the underlying mathematics behind linear regression and exponential growth modelling.
+A quantitative finance project that uses historical S&P 500 data, linear algebra, and exponential trend modelling to investigate how a long-term investment may grow if recent market growth trends continue.
 
 ---
 
-## Research Question
+## 🎯 Research Question
 
-> How much could a $10,000 investment in an S&P 500 ETF be worth in 20 years if historical growth trends observed over the last two decades continue?
+> How might a $10,000 investment grow over the next 20 years if recent historical S&P 500 growth trends continue?
 
----
-
-## Methodology
-
-### 1. Data Collection
-
-Historical S&P 500 adjusted closing prices are obtained from a publicly available dataset containing approximately one century of market data.
-
-### 2. Data Cleaning
-
-The dataset is:
-
-- Filtered to retain dates and adjusted closing prices.
-- Checked for missing values.
-- Converted into a suitable format for analysis.
-
-### 3. Log Transformation
-
-Stock prices often exhibit approximately exponential growth over long periods.
-
-To linearise the trend, prices are transformed using:
-
-y = log(P)
-
-where:
-
-- P = adjusted closing price
-- y = transformed price
-
-### 4. Least-Squares Fitting
-
-A design matrix is constructed:
-
-X = [1  t]
-
-The model parameters are estimated using:
-
-β = (XᵀX)⁻¹Xᵀy
-
-This provides the exponential growth trend that best fits the historical data.
-
-### 5. Forecasting
-
-The fitted model is projected forward by 20 years, producing an estimate of future index values under the assumption that the historical trend remains unchanged.
-
-### 6. Investment Growth Projection
-
-The future value of a hypothetical investment is calculated using:
-
-FV = PV × (Pfuture / Pcurrent)
-
-where:
-
-- PV = present value
-- FV = future value
-- Pfuture = projected future index value
-- Pcurrent = current trend value
+Using historical market data and a manually implemented least-squares regression model, this project estimates long-term growth trends and generates a 20-year market projection.
 
 ---
 
-## Technologies Used
+## 🔍 Key Findings
+
+✅ Developed a forecasting model using the closed-form least-squares solution rather than high-level regression functions.
+
+✅ Modelled exponential market growth through log transformation of historical S&P 500 prices.
+
+✅ Generated a 20-year projection based on the long-term trend observed over the most recent 20 years of market data.
+
+✅ Calculated projected future value and profit for a hypothetical $10,000 investment.
+
+✅ Demonstrated practical applications of linear algebra in financial modelling and time-series analysis.
+
+---
+
+## 🛠 Technologies Used
 
 - R
 - dplyr
 - Linear Algebra
 - Least-Squares Regression
-- Financial Data Analysis
+- Financial Time-Series Analysis
 - Data Visualisation
 
 ---
 
-## Example Output
+## 📊 Dataset
 
-The project generates:
+Historical S&P 500 adjusted closing price data was obtained from a publicly available dataset containing approximately one century of market history.
 
-- Historical S&P 500 price plots
-- Log-linear trend fits
-- 20-year forecasts
-- Estimated portfolio growth projections
+Variables used:
 
-Example visualisation:
+- Date
+- Adjusted Closing Price
 
-- Historical Prices
-- Fitted Exponential Trend
-- Future Projection
+The analysis focuses on the most recent 20 years of market performance to estimate current long-term growth behaviour.
 
 ---
 
-## Key Findings
+## 🧮 Methodology
 
-The model produces:
+### 1. Data Collection
 
-- Estimated long-term growth trend
-- Future S&P 500 projection
-- Projected value of a $10,000 investment
-- Estimated profit over a 20-year horizon
+Historical S&P 500 adjusted closing prices were imported and cleaned using R.
 
-The exact values depend on the most recent market data available when the analysis is performed.
+### 2. Log Transformation
+
+Because long-term asset growth is often approximately exponential, prices were transformed using:
+
+```math
+y = \log(P)
+```
+
+where:
+
+- \(P\) = adjusted closing price
+- \(y\) = transformed price
+
+This converts exponential growth into a linear relationship.
+
+### 3. Least-Squares Estimation
+
+A design matrix was constructed:
+
+```math
+X =
+\begin{bmatrix}
+1 & t
+\end{bmatrix}
+```
+
+Model parameters were then estimated using the closed-form least-squares solution:
+
+```math
+\hat{\beta}
+=
+(X^T X)^{-1} X^T y
+```
+
+Rather than relying on built-in regression functions, the model was built directly from the underlying mathematics.
+
+### 4. Exponential Trend Reconstruction
+
+Predicted log values were transformed back into price levels using:
+
+```math
+P = e^y
+```
+
+to produce the fitted market trend.
+
+### 5. 20-Year Forecasting
+
+The fitted exponential trend was projected forward by twenty years under the assumption that observed historical growth continues.
+
+### 6. Investment Scenario
+
+Future investment value was estimated using:
+
+```math
+FV = PV \times
+\left(
+\frac{P_{future}}
+{P_{current}}
+\right)
+```
+
+where:
+
+- PV = Initial investment
+- FV = Future value
+- \(P_{future}\) = Projected future index value
+- \(P_{current}\) = Current trend value
 
 ---
 
-## Limitations
+## 📈 Visualisation
 
-Several important limitations exist:
+### Historical Prices, Fitted Trend and Forecast
 
-- Assumes historical growth continues unchanged.
-- Ignores economic recessions and market crashes.
-- Does not model changing interest rates.
-- Does not account for valuation changes.
-- Does not consider inflation.
-- Does not include behavioural or macroeconomic factors.
-- Uses a deterministic trend rather than a probabilistic forecasting model.
+Rplot.png
 
-Because of these assumptions, results should be interpreted as trend-based estimates rather than realistic future predictions.
+This figure shows:
 
----
+- Historical S&P 500 prices
+- Exponential trend fitted using least-squares estimation
+- Twenty-year future projection
 
-## Skills Demonstrated
-
-This project demonstrates:
-
-- Financial data analysis
-- Linear algebra applications
-- Least-squares modelling
-- Time-series analysis
-- Data cleaning and preprocessing
-- Quantitative reasoning
-- Scientific programming in R
-- Research communication
+The fitted trend captures the underlying long-term growth trajectory while smoothing short-term market fluctuations.
 
 ---
 
-## Future Improvements
+## 💰 Investment Projection
+
+The model evaluates a hypothetical:
+
+```text
+Initial Investment: $10,000
+```
+
+and estimates:
+
+- Future portfolio value
+- Total profit
+- Growth implied by the fitted long-term trend
+
+The exact values vary depending on the latest available market data.
+
+---
+
+## 📊 Research Conclusions
+
+The analysis suggests that:
+
+### Long-Term Growth Remains Strong
+
+Historical S&P 500 performance demonstrates a persistent upward trend over long investment horizons.
+
+### Exponential Models Capture Long-Term Behaviour
+
+Applying a logarithmic transformation allows long-term market growth to be modelled effectively using linear algebra techniques.
+
+### Small Growth Differences Compound Significantly
+
+Over long horizons, relatively small differences in annual growth can produce substantial differences in eventual portfolio value.
+
+### Mathematical Models Can Inform Investment Planning
+
+Simple trend-based forecasting provides useful insight into the effects of long-term compounding, even when future market behaviour is uncertain.
+
+---
+
+## ⚠️ Limitations
+
+This project is intentionally simplified and should not be interpreted as an investment recommendation.
+
+Limitations include:
+
+- Assumes future growth resembles recent historical growth.
+- Ignores market crashes and structural breaks.
+- Does not model volatility.
+- Does not incorporate macroeconomic variables.
+- Does not account for interest rates or inflation.
+- Does not include valuation metrics.
+- Uses deterministic forecasting rather than probabilistic forecasting.
+
+As a result, projections should be viewed as trend-based estimates rather than predictions.
+
+---
+
+## 🚀 Future Improvements
 
 Potential extensions include:
 
-- CAGR analysis
+- Monte Carlo simulation
+- ARIMA forecasting
+- Exponential smoothing models
 - Volatility modelling
-- Maximum drawdown calculations
-- Monte Carlo simulations
-- Comparison with exponential smoothing models
-- Comparison with ARIMA forecasting techniques
-- Risk-adjusted return metrics
-- Dividend reinvestment modelling
+- Inflation-adjusted projections
+- Dividend reinvestment analysis
+- Maximum drawdown analysis
+- Risk-adjusted performance metrics
